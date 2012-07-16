@@ -4,6 +4,7 @@
 
  Copyright (c) 2008 Michael Mitchell - http://www.michaelmitchell.co.nz
  Copyright (c) 2011 Andrey Fedoseev <andrey.fedoseev@gmail.com> - http://andreyfedoseev.name
+ Copyright (c) 2012 vol7ron <supervolting@gmail.com>
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -22,24 +23,20 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
-
  */
 
 (function($) {
     $.fn.upload = function(options) {
         /** Merge the users options with our defaults */
         options = $.extend({
-            name: 'file',
-            enctype: 'multipart/form-data',
-            action: '',
-            autoSubmit: true,
-            onSubmit: function() {
-                },
-            onComplete: function() {
-                },
-            onSelect: function() {
-                },
-            params: {}
+            name       : 'file',
+            enctype    : 'multipart/form-data',
+            action     : '',
+            autoSubmit : true,
+            onSubmit   : function() {},
+            onComplete : function() {},
+            onSelect   : function() {},
+            params     : {}
         },
         options);
 
@@ -51,25 +48,25 @@
         var self = this;
 
         /** A unique id so we can find our elements later */
-        var id = new Date().getTime().toString().substr(8);
+        var id = new Date().getTime().toString();
 
         /** Upload iframe */
         var iframe = $("<iframe></iframe>", {
-            id: "iframe" + id,
-            name: "iframe" + id
+            id       : "iframe" + id,
+            name     : "iframe" + id
         }).css({
-            display: "none"
+            display  : "none"
         });
 
         /** Form */
         var form = $("<form></form>", {
-            method: "post",
-            enctype: options.enctype,
-            action: options.action,
-            target: "iframe" + id
+            method   : "post",
+            enctype  : options.enctype,
+            action   : options.action,
+            target   : "iframe" + id
         }).css({
-            margin: 0,
-            padding: 0
+            margin   : 0,
+            padding  : 0
         });
 
         /** Get cursor type from the object ocupload was assigned to */
@@ -78,13 +75,13 @@
 
         /** File Input */
         var input = $("<input>", {
-            name: options.name,
-            "type": "file"
+            name     : options.name,
+            "type"   : "file"
         }).css({
-            position: 'absolute',
-            display: 'block',
-            cursor: element_cursor,
-            opacity: 0
+            position : 'absolute',
+            display  : 'none',
+            cursor   : element_cursor,
+            opacity  : 0
         });
 
         /** Put everything together */
@@ -93,29 +90,23 @@
         form.append(input);
         element.after(form);
         element.after(iframe);
+	element.click(function(){input.click()});
 
         /** Find the container and make it nice and snug */
         var container = element.parent().css({
-            position: 'relative',
-            height: element.outerHeight() + 'px',
-            width: element.outerWidth() + 'px',
-            overflow: 'hidden',
-            cursor: element_cursor,
-            margin: 0,
-            padding: 0
+            position : 'relative',
+	    display  : element.css('display'),
+            height   : element.outerHeight() + 'px',
+            width    : element.outerWidth() + 'px',
+            overflow : 'hidden',
+            cursor   : element_cursor,
+            margin   : 0,
+            padding  : 0
         });
 
         /** Get input dimensions so we can put it in the right place */
         var input_height = input.outerHeight(1);
-        var input_width = input.outerWidth(1);
-
-        /** Move the input with the mouse to make sure it get clicked! */
-        container.mousemove(function(e) {
-            input.css({
-                top: e.pageY-container.offset().top-(input_height/2)+'px',
-                left: e.pageX-container.offset().left-input_width+30+'px'
-            });
-        });
+        var input_width  = input.outerWidth(1);
 
         /** Watch for file selection */
         input.change(function() {
@@ -130,10 +121,10 @@
 
         /** Methods */
         $.extend(this, {
-            autoSubmit: true,
-            onSubmit: options.onSubmit,
-            onComplete: options.onComplete,
-            onSelect: options.onSelect,
+            autoSubmit : options.autoSubmit,  // vol7ron: changed 'true' to 'options.autoSubmit'
+            onSubmit   : options.onSubmit,
+            onComplete : options.onComplete,
+            onSelect   : options.onSelect,
 
             /** get filename */
             filename: function() {
@@ -189,32 +180,24 @@
                 value = value ? value: false;
                 function option(action, value) {
                     switch (action) {
-                    case 'name':
-                        self.name(value);
-                        break;
-                    case 'action':
-                        self.action(value);
-                        break;
-                    case 'enctype':
-                        self.enctype(value);
-                        break;
-                    case 'params':
-                        self.params(value);
-                        break;
-                    case 'autoSubmit':
-                        self.autoSubmit = value;
-                        break;
-                    case 'onSubmit':
-                        self.onSubmit = value;
-                        break;
-                    case 'onComplete':
-                        self.onComplete = value;
-                        break;
-                    case 'onSelect':
-                        self.onSelect = value;
-                        break;
+                    case 'name':       self.name(value);
+                                       break;
+                    case 'action':     self.action(value);
+                                       break;
+                    case 'enctype':    self.enctype(value);
+                                       break;
+                    case 'params':     self.params(value);
+                                       break;
+                    case 'autoSubmit': self.autoSubmit = value;
+                                       break;
+                    case 'onSubmit':   self.onSubmit = value;
+                                       break;
+                    case 'onComplete': self.onComplete = value;
+                                       break;
+                    case 'onSelect':   self.onSelect = value;
+                                       break;
                     default:
-                        throw new Error('[jQuery.ocupload.set] \'' + action + '\' is an invalid option.');
+                                       throw new Error("[jQuery.ocupload.set] '" + action + "' is an invalid option.");
                     }
                 }
 
@@ -222,8 +205,7 @@
                     option(obj, value);
                 }
                 else {
-                    $.each(obj,
-                    function(key, value) {
+                    $.each(obj, function(key, value) {
                         option(key, value);
                     });
                 }
@@ -232,18 +214,23 @@
             /** Submit the form */
             submit: function() {
                 /** Do something before we upload */
-                this.onSubmit();
+
+                // if onSubmit returns true, don't send to server (for debugging)
+		var exit = this.onSubmit();
+                if (exit)
+                   return;
+
+		$(".ocupload-" + id,form).remove(); // clear the previous used attributes in case loading multiple files
 
                 /** add additional paramters before sending */
-                $.each(options.params,
-                function(key, value) {
-                    form.append($(
-                    '<input ' +
-                    'type="hidden" ' +
-                    'name="' + key + '" ' +
-                    'value="' + value + '" ' +
-                    '/>'
-                    ));
+                $.each(options.params, function(key, value) {
+                    form.append($("<input>",{
+                       type  : "hidden",
+		       name  : key,
+		       value : value,
+		       class : "ocupload-" + id  // including the upload id
+                    }));
+
                 });
 
                 /** Submit the actual form */
@@ -253,13 +240,13 @@
                 iframe.unbind().load(function() {
                     /** Get a response from the server in plain text */
                     var myFrame = document.getElementById(iframe.attr('name'));
-                    var response = $(myFrame.contentWindow.document.body).text();
+                    var response = $(myFrame.contentWindow.document.body).html();
 
                     /** Do something on complete */
                     self.onComplete(response);
-                    //done :D
                 });
             }
         });
     };
 })(jQuery);
+
