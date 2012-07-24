@@ -75,8 +75,9 @@
 
         /** File Input */
         var input = $("<input>", {
-            name     : options.name,
-            "type"   : "file"
+            name     : options.name + '[]',
+            multiple : 'multiple',
+            type     : 'file'
         }).css({
             position : 'absolute',
             display  : 'none',
@@ -249,4 +250,3 @@
         });
     };
 })(jQuery);
-
