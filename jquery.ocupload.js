@@ -112,7 +112,7 @@
         /** Watch for file selection */
         input.change(function() {
             /** Do something when a file is selected. */
-            self.onSelect();
+            self.onSelect(self.filename());
 
             /** Submit the form automaticly after selecting the file */
             if (self.autoSubmit) {
@@ -129,7 +129,7 @@
 
             /** get filename */
             filename: function() {
-                return input.attr('value');
+                return input.val();
             },
 
             /** get/set params */
